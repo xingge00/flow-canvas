@@ -1,16 +1,31 @@
 
 <script setup>
-import { ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ClickOutside as vClickOutside } from 'element-plus'
+import { getHighlighter } from 'shiki'
 import { copyToClipboard } from '@/utils/copy.js'
-
 // 面板宽度
 const PANEL_WIDTH = '500px'
 
+let highlighter
+onMounted(async () => {
+  // 预加载
+  highlighter = getHighlighter({
+    langs: ['javascript'],
+    themes: ['slack-dark'],
+  })
+})
+
 const visible = ref(false)
 const code = ref('')
-const show = (text) => {
+const html = ref('')
+const show = async (text) => {
   visible.value = true
+
+  html.value = (await highlighter).codeToHtml(text, {
+    lang: 'javascript',
+    theme: 'slack-dark',
+  })
   code.value = text
 }
 
@@ -40,15 +55,8 @@ defineExpose({
     <el-button link type="primary" @click="() => copy(code)">
       复制代码
     </el-button>
-    <highlightjs
-      style="height:100%;overflow: auto;"
-      language="js"
-      :code="code"
-    />
 
-    <pre>
-      {{ code }}
-    </pre>
+    <div class="code-panel" v-html="html"></div>
   </div>
 </template>
 
@@ -63,7 +71,18 @@ defineExpose({
   background-color: #fff;
   transition: all .15s ease;
   z-index: 99999;
-  padding: 20px;
+  padding: 10px;
+  box-sizing: border-box;
   box-shadow: -2px 0 8px rgba(0, 0, 0, .15);
+  .code-panel {
+    overflow: auto;
+    height: calc(100% - 20px);
+    :deep(pre) {
+      padding-left: 10px;
+      .line {
+        background-color: initial;
+      }
+    }
+  }
 }
-</style>./BranchInfo.vue
+</style>

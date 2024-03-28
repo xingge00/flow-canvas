@@ -13,6 +13,14 @@ export default defineConfig(({ mode }) => {
       alias: [{ find: '@', replacement: resolve(__dirname, 'src') }],
       extensions: ['.vue', '.js'],
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData:
+            '@use "@/scss/global.scss" as *;',
+        },
+      },
+    },
     server: {
       port: 7878,
       open: true,

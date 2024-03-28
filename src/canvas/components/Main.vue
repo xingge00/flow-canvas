@@ -180,6 +180,7 @@ const { handleMouseDown, handleMouseUp, positionDist, calcDist, onMouseWheel, sc
   <div
     id="canvas-main"
     class="canvas-main"
+    v-bind="$attrs"
     :style="{
       '--var-position-x': `${positionDist[0] + calcDist[0]}px`,
       '--var-position-y': `${positionDist[1] + calcDist[1]}px`,

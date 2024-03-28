@@ -55,7 +55,7 @@ const genContext = () => {
 const genNodeInfo = ({ type, branchList }) => {
   const infoMap = {
     if: {
-      condition: '', // 条件表达式
+      condition: 'a<b', // 条件表达式
       branchInfoList: [ // 分支信息
         { branchName: '分支1', type: true },
         { branchName: '分支2', type: false },
@@ -63,9 +63,9 @@ const genNodeInfo = ({ type, branchList }) => {
     },
     switch: {
       // 分支信息
-      condition: '',
+      condition: 'a',
       branchInfoList: (branchList || []).map((i, idx) =>
-        ({ branchName: `分支${idx + 1}`, condition: '' }),
+        ({ branchName: `分支${idx + 1}`, condition: `"c${idx + 1}"` }),
       ),
 
     },
