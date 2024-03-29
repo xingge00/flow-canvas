@@ -4,7 +4,7 @@ import Canvas from './canvas'
 </script>
 
 <template>
-  <Canvas></Canvas>
+  <Canvas style="height: 100vh;"></Canvas>
 </template>
 
 <style scoped>

@@ -1,9 +1,9 @@
 
 <script setup>
 import { computed, inject, ref, watch } from 'vue'
+import AddNodeBtn from '../functionBtn/AddNodeBtn'
+import { getColCountByBranch, getColCountByNode } from '../utils'
 import RenderList from './RenderList.vue'
-import AddNodeBtn from './AddNodeBtn.vue'
-import { getColCountByBranch, getColCountByNode } from './utils.js'
 
 const props = defineProps({
   modelValue: {

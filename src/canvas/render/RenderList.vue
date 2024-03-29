@@ -1,9 +1,9 @@
 
 <script setup>
-import { computed, getCurrentInstance, inject, toRaw, useAttrs } from 'vue'
+import { computed, getCurrentInstance, inject, toRaw } from 'vue'
+import AddNodeBtn from '../functionBtn/AddNodeBtn'
+import SubBtn from '../functionBtn/SubBtn.vue'
 import RenderItem from './RenderItem.vue'
-import AddNodeBtn from './AddNodeBtn.vue'
-import SubBtn from './SubBtn.vue'
 const props = defineProps({
   modelValue: {
     type: Array,
@@ -23,7 +23,6 @@ const props = defineProps({
   },
 })
 const emits = defineEmits(['update:modelValue', 'removeBranch'])
-const attrs = useAttrs()
 const nodeList = computed({
   get: () => props.modelValue,
   set: val => emits('update:modelValue', val),
@@ -90,7 +89,7 @@ const dragover = (e) => {
 </script>
 
 <template>
-  <div class="render-list-wrapper" v-bind="attrs">
+  <div class="render-list-wrapper" v-bind="$attrs">
     <template v-if="startLine">
       <SubBtn v-if="branchCount > 2" @click="emits('removeBranch')"></SubBtn>
       <div v-if="branchNameFlag" class="branch-name" :class="{ placeholder: !branchName }">

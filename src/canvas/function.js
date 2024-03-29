@@ -1,3 +1,4 @@
+/** 生成代码 */
 export const generateCode = (nodeList, deep = 0) => {
   console.log('nodeList', nodeList)
 

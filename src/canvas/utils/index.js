@@ -1,5 +1,4 @@
-// import 'element-plus/es/components/message/style/css'
-// import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
 // eslint-disable-next-line import/no-mutable-exports
 export let copyToClipboard = (text) => {
   const execCommandCopy = (text) => {
@@ -16,7 +15,7 @@ export let copyToClipboard = (text) => {
       input.select()
       document.execCommand('copy')
       document.body.removeChild(input)
-      // ElMessage.success('复制成功!')
+      ElMessage.success('复制成功!')
     } catch (e) {
       console.error('自动复制被禁用，请手动选取复制')
     }
@@ -29,13 +28,12 @@ export let copyToClipboard = (text) => {
     try {
       navigator.clipboard.writeText(text).then(
         () => {
-          // ElMessage.success('复制成功')
+          ElMessage.success('复制成功')
         },
         () => {
           execCommandCopy(text)
         },
       )
-      return
     } catch (e) {
       execCommandCopy(text)
       console.error('不支持异步剪切板:', e)
@@ -46,4 +44,20 @@ export let copyToClipboard = (text) => {
   copyToClipboard = !navigator.clipboard ? execCommandCopy : navigatorCopy
 
   copyToClipboard(text)
+}
+
+// 获取当前节点占用列数
+export const getColCountByNode = (node) => {
+  if (!node) return 0
+  if (!(node?.branchList?.length)) return 1
+
+  return node.branchList.reduce((acc, cur) =>
+    acc + Math.max(...cur.map(i => getColCountByNode(i)), 1)
+  , 0)
+}
+
+// 获取分支得列数
+export const getColCountByBranch = (branch) => {
+  if (!Array.isArray(branch)) return 1
+  return Math.max(...branch.map(i => getColCountByNode(i)), 1)
 }

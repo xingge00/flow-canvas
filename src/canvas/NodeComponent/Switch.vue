@@ -1,7 +1,7 @@
 
 <script setup>
-import { computed, useAttrs } from 'vue'
-import BranchRender from '../BranchRender.vue'
+import { computed } from 'vue'
+import BranchRender from '../render/BranchRender.vue'
 
 const props = defineProps({
   modelValue: {
@@ -19,7 +19,6 @@ const bindBranch = computed({
   set: val => emits('update:modelValue', { ...props.modelValue, branchList: val }),
 })
 
-const attrs = useAttrs()
 const addBranch = () => {
   const idx = bindBranch.value.push([])
   // eslint-disable-next-line vue/no-mutating-props
@@ -34,7 +33,7 @@ const removeBranch = (idx) => {
 </script>
 
 <template>
-  <div class="node-wrapper" v-bind="attrs">
+  <div class="node-wrapper" v-bind="$attrs">
     <slot></slot>
     <div class="c-circle c-switch">
       <slot name="showName">

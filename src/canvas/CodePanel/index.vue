@@ -3,7 +3,7 @@
 import { onMounted, ref } from 'vue'
 import { ClickOutside as vClickOutside } from 'element-plus'
 import { getHighlighter } from 'shiki'
-import { copyToClipboard } from '@/utils/copy.js'
+import { copyToClipboard } from '../utils/index.js'
 // 面板宽度
 const PANEL_WIDTH = '500px'
 

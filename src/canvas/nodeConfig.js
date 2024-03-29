@@ -1,10 +1,10 @@
 import { markRaw } from 'vue'
-import Start from './nodeComp/Start.vue'
-import End from './nodeComp/End.vue'
-import Error from './nodeComp/Error.vue'
-import If from './nodeComp/If.vue'
-import Switch from './nodeComp/Switch.vue'
-import Feat from './nodeComp/Feat.vue'
+import Start from './NodeComponent/Start.vue'
+import End from './NodeComponent/End.vue'
+import Error from './NodeComponent/Error.vue'
+import If from './NodeComponent/If.vue'
+import Switch from './NodeComponent/Switch.vue'
+import Feat from './NodeComponent/Feat.vue'
 
 const nodeList = [
   {

@@ -1,6 +1,6 @@
 
 <script setup>
-import { getCurrentInstance, inject, useAttrs } from 'vue'
+import { getCurrentInstance, inject } from 'vue'
 const props = defineProps({
   endLine: {
     type: Boolean,
@@ -12,7 +12,6 @@ const props = defineProps({
   },
 })
 const emits = defineEmits(['toAdd'])
-const attrs = useAttrs()
 
 const addNodeDialogRef = inject('addNodeDialogRef')
 
@@ -45,7 +44,7 @@ const handleClick = (e) => {
 </script>
 
 <template>
-  <div class="add-node" v-bind="attrs" @click.stop="handleClick">
+  <div class="add-node" v-bind="$attrs" @click.stop="handleClick">
     +
   </div>
   <div v-if="endLine" class="line"></div>
