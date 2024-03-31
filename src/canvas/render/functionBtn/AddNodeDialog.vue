@@ -2,7 +2,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ClickOutside as vClickOutside } from 'element-plus'
-import nodeConfig from '../nodeConfig'
+import nodeConfig from '../../nodeConfig'
 
 const props = defineProps({
   scale: { type: Number, default: 1 },

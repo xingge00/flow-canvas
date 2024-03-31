@@ -1,8 +1,8 @@
 
 <script setup>
 import { computed, inject, ref, watch } from 'vue'
-import AddNodeBtn from '../functionBtn/AddNodeBtn'
 import { getColCountByBranch, getColCountByNode } from '../utils'
+import AddNodeBtn from './functionBtn/AddNodeBtn'
 import RenderList from './RenderList.vue'
 
 const props = defineProps({

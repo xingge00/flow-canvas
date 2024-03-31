@@ -1,8 +1,8 @@
 
 <script setup>
 import { computed, getCurrentInstance, inject, toRaw } from 'vue'
-import AddNodeBtn from '../functionBtn/AddNodeBtn'
-import SubBtn from '../functionBtn/SubBtn.vue'
+import AddNodeBtn from './functionBtn/AddNodeBtn'
+import SubBtn from './functionBtn/SubBtn.vue'
 import RenderItem from './RenderItem.vue'
 const props = defineProps({
   modelValue: {

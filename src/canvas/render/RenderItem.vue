@@ -1,9 +1,9 @@
 
 <script setup>
 import { computed, getCurrentInstance, inject, toRaw } from 'vue'
-import AddNodeBtn from '../functionBtn/AddNodeBtn'
-import SubBtn from '../functionBtn/SubBtn.vue'
 import nodeConfig, { ErrorItem } from '../nodeConfig'
+import AddNodeBtn from './functionBtn/AddNodeBtn'
+import SubBtn from './functionBtn/SubBtn.vue'
 const props = defineProps({
   modelValue: {
     type: Object,

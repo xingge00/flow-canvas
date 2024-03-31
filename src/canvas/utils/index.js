@@ -1,4 +1,5 @@
 import { ElMessage } from 'element-plus'
+// 复制到剪切板
 // eslint-disable-next-line import/no-mutable-exports
 export let copyToClipboard = (text) => {
   const execCommandCopy = (text) => {

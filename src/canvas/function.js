@@ -44,3 +44,8 @@ export const generateCode = (nodeList, deep = 0) => {
   }, '')
   return result
 }
+
+/** 执行代码 */
+export const executeCode = (nodeList) => {
+  return nodeList.value
+}
