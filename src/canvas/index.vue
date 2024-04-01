@@ -7,6 +7,7 @@ import CodePanel from './CodePanel'
 import useCanvasDrag from './useCanvasDrag'
 import useProvideRef from './useProvideRef'
 import useShortcutKey from './useShortcutKey'
+import OperationStack from './OperationStack'
 import { executeCode, generateCode } from './function.js'
 import { BaseNode, MIN_BRANCH_COUNT, getParentNode } from './nodeConfig.js'
 
@@ -72,6 +73,9 @@ const generate = () => {
 
 // 拖动画板和缩放
 const { positionDist, calcDist, scale } = useCanvasDrag('#canvas-main')
+
+// 操作栈
+const operationStack = new OperationStack()
 </script>
 
 <template>
