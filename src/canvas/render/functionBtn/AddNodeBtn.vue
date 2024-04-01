@@ -16,16 +16,16 @@ const emits = defineEmits(['toAdd'])
 const addNodeDialogRef = inject('addNodeDialogRef')
 
 // 获取元素相对于canvas-main的位置
-const getPositionByCanvas = (el) => {
-  if (el.id === 'canvas-main' || !el) {
-    return { x: 0, y: 0 }
-  }
-  const parentPos = getPositionByCanvas(el.offsetParent)
-  return {
-    x: parentPos.x + el.offsetLeft,
-    y: parentPos.y + el.offsetTop,
-  }
-}
+// const getPositionByCanvas = (el) => {
+//   if (el.id === 'canvas-main' || !el) {
+//     return { x: 0, y: 0 }
+//   }
+//   const parentPos = getPositionByCanvas(el.offsetParent)
+//   return {
+//     x: parentPos.x + el.offsetLeft,
+//     y: parentPos.y + el.offsetTop,
+//   }
+// }
 
 const addNodeCallBack = (node) => {
   emits('toAdd', node)
@@ -36,10 +36,10 @@ const handleClick = (e) => {
   if (props.addType === 'branch') {
     return emits('toAdd')
   }
-  const { target, offsetY } = e
+  const { target, clientX, clientY } = e
+  const { clientWidth, clientHeight } = target
 
-  const { x: domX, y: domY } = getPositionByCanvas(target)
-  addNodeDialogRef.value.show({ x: target.clientWidth + domX, y: offsetY + domY }, addNodeCallBack, instance)
+  addNodeDialogRef.value.show({ x: clientWidth / 2 + clientX, y: clientHeight / 2 + clientY }, addNodeCallBack, instance)
 }
 </script>
 

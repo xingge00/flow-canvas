@@ -64,6 +64,7 @@ defineExpose({
 .custom-drawer {
   position: fixed;
   top: 0;
+  max-width:65%;
   right: var(--var-right);
   width: var(--var-width);
   opacity: var(--var-opacity);

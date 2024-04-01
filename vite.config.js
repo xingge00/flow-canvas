@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 7878,
+      host: '0.0.0.0',
       open: true,
       outDir: 'dist',
     },

@@ -44,6 +44,7 @@ const close = () => {
 .custom-drawer {
   position: fixed;
   top: 0;
+  max-width:65%;
   right: var(--var-right);
   width: var(--var-width);
   opacity: var(--var-opacity);
@@ -53,4 +54,4 @@ const close = () => {
   z-index: 9999;
   box-shadow: -2px 0 8px rgba(0, 0, 0, .15);
 }
-</style>./BranchInfo.vue
+</style>

@@ -71,7 +71,7 @@ const generate = () => {
 }
 
 // 拖动画板和缩放
-const { handleMouseDown, handleMouseUp, positionDist, calcDist, onMouseWheel, scale } = useCanvasDrag()
+const { positionDist, calcDist, scale } = useCanvasDrag('#canvas-main')
 </script>
 
 <template>
@@ -85,9 +85,6 @@ const { handleMouseDown, handleMouseUp, positionDist, calcDist, onMouseWheel, sc
       '--var-position-scale': scale,
     }"
     @click.capture="activateNode = null"
-    @mousedown="handleMouseDown"
-    @mouseup="handleMouseUp"
-    @mousewheel="onMouseWheel"
   >
     <div class="left-top-wrapper">
       <el-button @click="shortcutKeyFlag = !shortcutKeyFlag">
@@ -103,6 +100,7 @@ const { handleMouseDown, handleMouseUp, positionDist, calcDist, onMouseWheel, sc
         生成代码
       </el-button>
     </div>
+
     <div class="canvas-node-container">
       <RenderList v-model="nodeList" :start-line="false"></RenderList>
     </div>
