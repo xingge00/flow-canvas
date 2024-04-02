@@ -1,6 +1,6 @@
 
 <script setup>
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import BranchRender from '../render/BranchRender.vue'
 
 const props = defineProps({
@@ -19,16 +19,33 @@ const bindBranch = computed({
   set: val => emits('update:modelValue', { ...props.modelValue, branchList: val }),
 })
 
+const operationStack = inject('operationStack')
+
 const addBranch = () => {
-  const idx = bindBranch.value.push([])
-  // eslint-disable-next-line vue/no-mutating-props
-  props.modelValue.nodeInfo.branchInfoList[idx] = {}
+  const newBranch = []
+  const newBranchInfo = {}
+  operationStack.recallStackPush({
+    dataType: 'addBranch',
+    node: props.modelValue,
+    branchList: bindBranch.value,
+    branch: newBranch,
+    branchInfo: newBranchInfo,
+  })
 }
 
 const removeBranch = (idx) => {
-  bindBranch.value.splice(idx, 1)
-  // eslint-disable-next-line vue/no-mutating-props
-  props.modelValue.nodeInfo.branchInfoList.splice(idx, 1)
+  // bindBranch.value.splice(idx, 1)
+  // // eslint-disable-next-line vue/no-mutating-props
+  // props.modelValue.nodeInfo.branchInfoList.splice(idx, 1)
+
+  operationStack.recallStackPush({
+    dataType: 'deleteBranch',
+    node: props.modelValue,
+    branch: bindBranch.value[idx],
+    branchList: bindBranch.value,
+    targetIdx: idx,
+    branchInfo: null,
+  })
 }
 </script>
 

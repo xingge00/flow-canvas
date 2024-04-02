@@ -56,32 +56,18 @@ const dragover = (e) => {
   e.preventDefault()
 }
 
-// 更新分支信息
-const updateBranch = (branchList, oldIdx, newIdx) => {
-  let left = Math.min(oldIdx, newIdx)
-  let right = Math.max(oldIdx, newIdx)
-  const temp = branchList[oldIdx]
-
-  while (left < right) {
-    if (oldIdx < newIdx)
-      branchList[left] = branchList[++left]
-    else
-      branchList[right] = branchList[--right]
-
-    if (left === right) branchList[left] = temp
-  }
-}
-
+const operationStack = inject('operationStack')
 const drop = (idx) => {
   if (dragIdx.value === idx || dragIdx.value === null) return
 
-  // 更新画布节点
-  updateBranch(bindBranch.value || [], dragIdx.value, idx)
-  // 更新分支信息
-  updateBranch(props.curNode?.nodeInfo?.branchInfoList || [], dragIdx.value, idx)
+  operationStack.recallStackPush({
+    dataType: 'moveBranch',
+    branchList: bindBranch.value,
+    node: props.curNode,
+    curIdx: dragIdx.value,
+    targetIdx: idx,
 
-  // const [source] = bindBranch.value.splice(dragIdx.value, 1)
-  // bindBranch.value.splice(idx, 0, source)
+  })
 
   dragIdx.value = null
 }

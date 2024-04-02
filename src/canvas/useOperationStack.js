@@ -1,3 +1,4 @@
+import { computed, ref, toRefs } from 'vue'
 import { swapMove } from './utils'
 /**
  * recallData.dataType:[
@@ -149,81 +150,59 @@ const handleFn = (recallData, doType = 'recall') => {
   return true
 }
 
-export default class OperationStack {
-  #recallStack = []// 操作栈
-  #recallStackIndex = -1 // 操作栈索引
-  #saveStatus = true // 保存状态
+export default function useOperationStack() {
+  const recallStackMaxLength = 100
+  const recallStack = ref([])
+  const recallStackIndex = ref(-1)
 
-  constructor() {
-    this.recallStackMaxLength = 100 // 操作栈最大长度
+  const canRecall = computed(() => !!(recallStack.value.length && recallStackIndex.value >= 0))
+  const canRecover = computed(() => !!(recallStack.value.length && recallStackIndex.value < recallStack.value.length - 1))
+
+  const getLength = () => { // 操作栈长度
+    return recallStack.value.length
   }
 
-  getLength() { // 操作栈长度
-    return this.#recallStack.length
-  }
-
-  /**
-   * @param { operation } data
-   *  例：
-   *   {
-   *      type: 'addNode',
-   *      newVal,
-   *      nodeList,
-   *      index
-   *   }
-   * @returns
-   */
-  recallStackPush(recallData) {
+  const recallStackPush = (recallData) => {
     // 新操作入栈，清除恢复记录
-    if (this.getLength() - 1 > this.#recallStackIndex) {
-      this.#recallStack.splice(this.#recallStackIndex + 1, this.getLength() - this.#recallStackIndex - 1)
+    if (getLength() - 1 > recallStackIndex.value) {
+      recallStack.value.splice(recallStackIndex.value + 1, getLength() - recallStackIndex.value - 1)
     }
     // 操作栈满了，删除最早的操作
-    if (this.#recallStackIndex >= this.recallStackMaxLength - 1) {
-      this.#recallStack.shift()
+    if (recallStackIndex.value >= recallStackMaxLength - 1) {
+      recallStack.value.shift()
     }
 
-    this.#recallStackIndex = this.#recallStack.push(recallData) - 1
-    // handleRealRecover(recallData)
+    recallStackIndex.value = recallStack.value.push(recallData) - 1
     return handleFn(recallData, 'recover')
   }
 
   /** 撤回操作 */
-  handleRecall() {
-    if (this.#recallStackIndex < 0) {
-      console.error('操作栈为空, 无法撤回')
-      return
-    }
-
-    // 将状态标记为未保存
-    this.#saveStatus = false
-
-    const recallData = this.#recallStack[this.#recallStackIndex]
+  const handleRecall = () => {
+    if (recallStackIndex.value < 0) return console.error('操作栈为空, 无法撤回')
+    const recallData = recallStack.value[recallStackIndex.value]
     // handleRealRecall(operation)
     handleFn(recallData, 'recall')
 
-    this.#recallStackIndex -= 1
+    recallStackIndex.value -= 1
     return recallData
   }
 
   /** 恢复操作 */
-  handleRecover() {
-    if (this.#recallStackIndex >= this.getLength() - 1) {
-      console.error('操作栈为空, 无法恢复')
-      return
-    }
+  const handleRecover = () => {
+    if (recallStackIndex.value >= getLength() - 1) return console.error('操作栈为空, 无法恢复')
 
-    // 将状态标记为未保存
-    this.#saveStatus = false
-
-    this.#recallStackIndex += 1
-    const recallData = this.#recallStack[this.#recallStackIndex]
+    recallStackIndex.value += 1
+    const recallData = recallStack.value[recallStackIndex.value]
     handleFn(recallData, 'recover')
     return recallData
   }
 
-  // 更新保存状态
-  updateSaveStatus(data) {
-    this.#saveStatus = data
+  return {
+    canRecall, // 能否撤回
+    canRecover, // 能否恢复
+    getLength, // 获取栈长度
+    recallStackPush, // 操作入栈
+    handleRecall, // 撤回操作
+    handleRecover, // 恢复操作
   }
 }

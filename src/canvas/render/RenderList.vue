@@ -31,34 +31,37 @@ const nodeList = computed({
 const branchNameFlag = inject('branchNameFlag')
 const dragConf = inject('dragConf')
 const hoverStack = inject('hoverStack')
+const operationStack = inject('operationStack')
 
 const addNode = (idx, node) => {
   const newNode = node.generateNode()
-  nodeList.value.splice(idx + 1, 0, newNode)
+  operationStack.recallStackPush({ dataType: 'addNode', node: newNode, nodeList: nodeList.value, targetIdx: idx + 1 })
 }
 
 const moveTo = (sourceNode, sourceBranch, idx) => {
   const sourceIdx = sourceBranch.findIndex(i => i === sourceNode)
-  // 同一条分支节点移动
-  if (sourceBranch === nodeList.value) {
-    // 拖放至自身前后位置不变 不需要做操作
-    if (sourceIdx === idx + 1 || sourceIdx === idx) return
 
-    if (sourceIdx > idx) {
-      sourceBranch.splice(sourceIdx, 1)
-      sourceBranch.splice(idx + 1, 0, sourceNode)
-    } else {
-      sourceBranch.splice(idx + 1, 0, sourceNode)
-      sourceBranch.splice(sourceIdx, 1)
-    }
-  } else {
-    sourceBranch.splice(sourceIdx, 1)
-    nodeList.value.splice(idx + 1, 0, sourceNode)
-  }
+  if (
+    sourceBranch === nodeList.value// 同一条分支节点移动
+    && (sourceIdx === idx + 1 || sourceIdx === idx)// 拖放至自身前后位置不变 不需要做操作
+  ) return
+  operationStack.recallStackPush({
+    dataType: 'moveNode',
+    node: sourceNode,
+    nodeList: sourceBranch,
+    curIdx: sourceIdx,
+    targetIdx: idx,
+    targetNodeList: nodeList.value,
+  })
 }
 
 const subNode = (idx) => {
-  nodeList.value.splice(idx, 1)
+  operationStack.recallStackPush({
+    dataType: 'deleteNode',
+    nodeList: nodeList.value,
+    targetIdx: idx,
+    node: nodeList.value[idx],
+  })
 }
 
 // 拖动放置

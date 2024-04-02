@@ -62,3 +62,18 @@ export const getColCountByBranch = (branch) => {
   if (!Array.isArray(branch)) return 1
   return Math.max(...branch.map(i => getColCountByNode(i)), 1)
 }
+
+export const swapMove = (arr, oldIdx, newIdx) => {
+  let left = Math.min(oldIdx, newIdx)
+  let right = Math.max(oldIdx, newIdx)
+  const temp = arr[oldIdx]
+
+  while (left < right) {
+    if (oldIdx < newIdx)
+      arr[left] = arr[++left]
+    else
+      arr[right] = arr[--right]
+
+    if (left === right) arr[left] = temp
+  }
+}

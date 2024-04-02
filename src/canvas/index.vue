@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, provide, ref } from 'vue'
 import RenderList from './render/RenderList.vue'
 import AddNodeDialog from './render/functionBtn/AddNodeDialog.vue'
 import InfoPanel from './InfoPanel'
@@ -7,7 +7,7 @@ import CodePanel from './CodePanel'
 import useCanvasDrag from './useCanvasDrag'
 import useProvideRef from './useProvideRef'
 import useShortcutKey from './useShortcutKey'
-import OperationStack from './OperationStack'
+import useOperationStack from './useOperationStack'
 import { executeCode, generateCode } from './function.js'
 import { BaseNode, MIN_BRANCH_COUNT, getParentNode } from './nodeConfig.js'
 
@@ -75,7 +75,9 @@ const generate = () => {
 const { positionDist, calcDist, scale } = useCanvasDrag('#canvas-main')
 
 // 操作栈
-const operationStack = new OperationStack()
+const operationStack = useOperationStack()
+const { canRecall, canRecover } = operationStack
+provide('operationStack', operationStack)
 </script>
 
 <template>
@@ -90,19 +92,29 @@ const operationStack = new OperationStack()
     }"
     @click.capture="activateNode = null"
   >
-    <div class="left-top-wrapper">
-      <el-button @click="shortcutKeyFlag = !shortcutKeyFlag">
-        快捷建：{{ shortcutKeyFlag ? '开启' : '关闭' }}
-      </el-button>
-      <el-button @click="branchNameFlag = !branchNameFlag">
-        显示分支名：{{ branchNameFlag ? '开启' : '关闭' }}
-      </el-button>
-      <el-button @click="execute">
-        执行
-      </el-button>
-      <el-button @click="generate">
-        生成代码
-      </el-button>
+    <div class="top-wrapper">
+      <div class="left-top-wrapper">
+        <el-button @click="shortcutKeyFlag = !shortcutKeyFlag">
+          快捷建：{{ shortcutKeyFlag ? '开启' : '关闭' }}
+        </el-button>
+        <el-button @click="branchNameFlag = !branchNameFlag">
+          显示分支名：{{ branchNameFlag ? '开启' : '关闭' }}
+        </el-button>
+        <el-button @click="execute">
+          执行
+        </el-button>
+        <el-button @click="generate">
+          生成代码
+        </el-button>
+      </div>
+      <div class="right-top-wrapper">
+        <el-button :disabled="!canRecall" @click="() => operationStack.handleRecall()">
+          撤销
+        </el-button>
+        <el-button :disabled="!canRecover" @click="() => operationStack.handleRecover()">
+          恢复
+        </el-button>
+      </div>
     </div>
 
     <div class="canvas-node-container">
@@ -131,11 +143,18 @@ const operationStack = new OperationStack()
   background-size: 20px 20px;
   position: relative; // 不要删除 用于获取相对画布定位
   overflow: hidden;
-  .left-top-wrapper {
+  .top-wrapper {
     position: absolute;
     left: 0;
     top: 0;
     z-index: 10;
+    width: 100%;
+    .left-top-wrapper {
+      float: left;
+    }
+    .right-top-wrapper {
+      float: right;
+    }
   }
   .canvas-node-container {
     z-index: 1;
