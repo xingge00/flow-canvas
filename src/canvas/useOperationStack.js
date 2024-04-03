@@ -173,7 +173,12 @@ export default function useOperationStack() {
     }
 
     recallStackIndex.value = recallStack.value.push(recallData) - 1
-    return handleFn(recallData, 'recover')
+    const pushSuccess = handleFn(recallData, 'recover')
+    if (!pushSuccess) {
+      recallStack.value.pop()
+      recallStackIndex.value--
+    }
+    return pushSuccess
   }
 
   /** 撤回操作 */
