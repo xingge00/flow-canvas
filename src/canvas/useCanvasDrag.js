@@ -1,15 +1,41 @@
-import { computed, onBeforeUnmount, onMounted, ref, unref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue'
 import { useEventListener } from '@vueuse/core'
 
-export default function (elQuery) {
+const cacheRef = (key, defaultValue, useCache = true) => {
+  let value
+  try {
+    value = JSON.parse(localStorage.getItem(key))
+  } catch (error) {
+    console.error(error)
+  }
+  const temp = ref(value || defaultValue)
+  watch(() => temp.value, (val) => {
+    if (useCache) {
+      try {
+        localStorage.setItem(key, JSON.stringify(val))
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }, {
+    deep: true,
+  })
+
+  return temp
+}
+
+export default function (elQuery, useCache = true) {
   // 拖动距离和节点移动比率
   const DRAG_RATIO = 1
   let tempPos = [0, 0]
-  const positionDist = ref([0, 0])
-  const calcDist = ref([0, 0])
+  // const positionDist = ref([0, 0])
+  // const calcDist = ref([0, 0])
+  const positionDist = cacheRef('positionDist', [0, 0], useCache)
+  const calcDist = cacheRef('calcDist', [0, 0], useCache)
 
   // 当前画板的比例100为正常
-  const curRatio = ref(100)
+  // const curRatio = ref(100)
+  const curRatio = cacheRef('curRatio', 100, useCache)
   const scale = computed(() => curRatio.value / 100)
   const SCALE_STEP = 10
   const toZoom = (calcVal) => {
@@ -175,5 +201,10 @@ export default function (elQuery) {
     positionDist, // 定位偏移
     calcDist, // 拖动偏移
     scale, // 缩放大小
+    reset: () => {
+      positionDist.value = [0, 0]
+      calcDist.value = [0, 0]
+      curRatio.value = 100
+    },
   }
 }

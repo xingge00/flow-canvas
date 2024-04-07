@@ -10,7 +10,7 @@ import { swapMove } from './utils'
  *  'shearPasteNode', 'shearPasteBranch',
  *  ]
  */
-const handleFn = (recallData, doType = 'recall') => {
+const handleFn = (recallData, doType = 'recall', cb = () => {}) => {
   const {
     dataType,
     node,
@@ -147,10 +147,11 @@ const handleFn = (recallData, doType = 'recall') => {
     return false
   }
   doMap[dataType][doType]()
+  cb()
   return true
 }
 
-export default function useOperationStack() {
+export default function useOperationStack(cb = () => {}) {
   const recallStackMaxLength = 100
   const recallStack = ref([])
   const recallStackIndex = ref(-1)
@@ -173,7 +174,7 @@ export default function useOperationStack() {
     }
 
     recallStackIndex.value = recallStack.value.push(recallData) - 1
-    const pushSuccess = handleFn(recallData, 'recover')
+    const pushSuccess = handleFn(recallData, 'recover', cb)
     if (!pushSuccess) {
       recallStack.value.pop()
       recallStackIndex.value--
@@ -186,7 +187,7 @@ export default function useOperationStack() {
     if (recallStackIndex.value < 0) return console.error('操作栈为空, 无法撤回')
     const recallData = recallStack.value[recallStackIndex.value]
     // handleRealRecall(operation)
-    handleFn(recallData, 'recall')
+    handleFn(recallData, 'recall', cb)
 
     recallStackIndex.value -= 1
     return recallData
@@ -198,7 +199,7 @@ export default function useOperationStack() {
 
     recallStackIndex.value += 1
     const recallData = recallStack.value[recallStackIndex.value]
-    handleFn(recallData, 'recover')
+    handleFn(recallData, 'recover', cb)
     return recallData
   }
 

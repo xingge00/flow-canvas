@@ -263,4 +263,35 @@ export const getParentNode = (target) => {
   const activateNode = window?.__activateNode?.value || null
   return convert(nodeList || [], target || activateNode)
 }
+
+export const stringify = (arg, toString = true) => {
+  if (!arg) return ''
+  const stringifyNode = (node) => {
+    const result = {
+      type: node.type,
+      nodeInfo: node.nodeInfo,
+
+    }
+    if (node.branchList) {
+      result.branchList = node.branchList.map(branch => stringify(branch, false))
+    }
+    return result
+  }
+
+  let result = Array.isArray(arg) ? arg.map(branch => stringify(branch, false)) : stringifyNode(arg)
+  if (toString) {
+    result = JSON.stringify(result)
+    // result = result.replace(/\"/g, '\\"')
+  }
+
+  return result
+}
+
+export const parse = (str) => {
+  // str = str.replace(/[^\x20-\x7E\u4E00-\u9FFF]+/g, '')
+  const tempList = JSON.parse(str) || []
+
+  return tempList.map(node => new BaseNode(node.type, { branchList: node.branchList, nodeInfo: node.nodeInfo }))
+}
+
 export default nodeList

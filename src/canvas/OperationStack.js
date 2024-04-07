@@ -152,7 +152,6 @@ const handleFn = (recallData, doType = 'recall') => {
 export default class OperationStack {
   #recallStack = []// 操作栈
   #recallStackIndex = -1 // 操作栈索引
-  #saveStatus = true // 保存状态
 
   constructor() {
     this.recallStackMaxLength = 100 // 操作栈最大长度
@@ -162,17 +161,6 @@ export default class OperationStack {
     return this.#recallStack.length
   }
 
-  /**
-   * @param { operation } data
-   *  例：
-   *   {
-   *      type: 'addNode',
-   *      newVal,
-   *      nodeList,
-   *      index
-   *   }
-   * @returns
-   */
   recallStackPush(recallData) {
     // 新操作入栈，清除恢复记录
     if (this.getLength() - 1 > this.#recallStackIndex) {
@@ -195,9 +183,6 @@ export default class OperationStack {
       return
     }
 
-    // 将状态标记为未保存
-    this.#saveStatus = false
-
     const recallData = this.#recallStack[this.#recallStackIndex]
     // handleRealRecall(operation)
     handleFn(recallData, 'recall')
@@ -213,17 +198,9 @@ export default class OperationStack {
       return
     }
 
-    // 将状态标记为未保存
-    this.#saveStatus = false
-
     this.#recallStackIndex += 1
     const recallData = this.#recallStack[this.#recallStackIndex]
     handleFn(recallData, 'recover')
     return recallData
-  }
-
-  // 更新保存状态
-  updateSaveStatus(data) {
-    this.#saveStatus = data
   }
 }
