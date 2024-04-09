@@ -165,7 +165,7 @@ useWindowChange(() => {
           <el-icon><RefreshRight /></el-icon>
         </el-button>
       </div>
-      <el-alert v-if="shortcutKeyFlag" class="custom-alert" title="复制:ctrl+c、剪切:ctrl+x、粘贴:ctrl+v、撤销:ctrl+z、恢复:ctrl+y" type="warning" />
+      <el-alert v-if="shortcutKeyFlag" class="custom-alert" title="复制:ctrl+c、剪切:ctrl+x、粘贴:ctrl+v、撤销:ctrl+z、恢复:ctrl+y、缩放:ctrl+滚轮" type="warning" />
     </div>
 
     <div class="canvas-node-container" @mouseleave="hoverStack = []">
