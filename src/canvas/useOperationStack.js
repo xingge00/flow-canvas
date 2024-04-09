@@ -1,4 +1,4 @@
-import { computed, ref, toRefs } from 'vue'
+import { computed, ref } from 'vue'
 import { swapMove } from './utils'
 /**
  * recallData.dataType:[
@@ -21,6 +21,8 @@ const handleFn = (recallData, doType = 'recall', cb = () => {}) => {
     branchInfo,
     targetIdx,
     targetNodeList,
+    shearPlate,
+    updateShearPlate,
   } = recallData
 
   const doMap = {
@@ -106,36 +108,86 @@ const handleFn = (recallData, doType = 'recall', cb = () => {}) => {
         swapMove(node?.nodeInfo?.branchInfoList || [], curIdx, targetIdx)
       },
     },
-    // 粘贴节点（复制）
-    copyPasteNode: {
-      recall: () => { },
-      recover: () => { },
-    },
-    // 粘贴分支（复制）
-    copyPasteBranch: {
-      recall: () => { },
-      recover: () => { },
-    },
     // 截切节点
     shearNode: {
-      recall: () => { },
-      recover: () => { },
-    },
-    // 截切分支
-    shearBranch: {
-      recall: () => { },
-      recover: () => { },
+      recall: () => {
+        nodeList.splice(targetIdx, 0, node)
+        updateShearPlate(recallData.preSharePlate)
+      },
+      recover: () => {
+        nodeList.splice(targetIdx, 1)
+        recallData.preSharePlate = shearPlate?.value ? { ...shearPlate.value } : null
+        updateShearPlate({
+          type: 'shear',
+          data: node,
+        })
+      },
     },
     // 粘贴节点（剪切）
     shearPasteNode: {
-      recall: () => { },
-      recover: () => { },
+      recall: () => {
+        nodeList.splice(targetIdx + 1, 1)
+        updateShearPlate(recallData.preSharePlate)
+      },
+      recover: () => {
+        nodeList.splice(targetIdx + 1, 0, node)
+        recallData.preSharePlate = shearPlate?.value ? { ...shearPlate.value } : null
+        // 粘贴完剪切的数据 ,清空剪切板
+        updateShearPlate(null)
+      },
     },
-    // 粘贴节点（剪切）
+    // 截切分支
+    shearBranch: {
+      recall: () => {
+        branchList?.splice(targetIdx, 0, branch)
+        node.nodeInfo.branchInfoList?.splice(targetIdx, 0, branchInfo)
+        updateShearPlate(recallData.preSharePlate)
+      },
+      recover: () => {
+        branchList?.splice(targetIdx, 1)
+        recallData.preSharePlate = shearPlate?.value ? { ...shearPlate.value } : null
+        updateShearPlate({
+          type: 'shear',
+          data: branch,
+          branchInfo,
+        })
+      },
+    },
+    // 粘贴分支（剪切）
     shearPasteBranch: {
-      recall: () => { },
-      recover: () => { },
+      recall: () => {
+        branchList.pop()
+        updateShearPlate(recallData.preSharePlate)
+      },
+      recover: () => {
+        const len = branchList.push(branch)
+        node.nodeInfo.branchInfoList[len - 1] = branchInfo
+        recallData.preSharePlate = shearPlate?.value ? { ...shearPlate.value } : null
+        // 粘贴完剪切的数据 ,清空剪切板
+        updateShearPlate(null)
+      },
     },
+    // 粘贴节点（复制）
+    copyPasteNode: {
+      recall: () => {
+        nodeList.splice(targetIdx, 1)
+      },
+      recover: () => {
+        nodeList.splice(targetIdx, 0, node)
+      },
+    },
+    // 粘贴分支（复制）
+    copyPasteBranch: {
+      recall: () => {
+        node.branchList.pop()
+        node.nodeInfo.branchInfoList.splice(node.branchList.length, 1)
+      },
+      recover: () => {
+        const len = node.branchList.push(branch)
+        node.nodeInfo.branchInfoList[len - 1] = branchInfo
+      },
+    },
+
   }
 
   if (!doMap[dataType]) {

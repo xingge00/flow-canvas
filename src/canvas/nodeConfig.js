@@ -289,9 +289,13 @@ export const stringify = (arg, toString = true) => {
 
 export const parse = (str) => {
   // str = str.replace(/[^\x20-\x7E\u4E00-\u9FFF]+/g, '')
+  if (typeof str !== 'string') str = JSON.stringify(str)
   const tempList = JSON.parse(str) || []
 
-  return tempList.map(node => new BaseNode(node.type, { branchList: node.branchList, nodeInfo: node.nodeInfo }))
+  return tempList.map(node => new BaseNode(node.type, {
+    branchList: (node.branchList || []).map(branch => parse(branch)),
+    nodeInfo: node.nodeInfo,
+  }))
 }
 
 export default nodeList

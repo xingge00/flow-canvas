@@ -28,13 +28,11 @@ export default function (elQuery, useCache = true) {
   // 拖动距离和节点移动比率
   const DRAG_RATIO = 1
   let tempPos = [0, 0]
-  // const positionDist = ref([0, 0])
-  // const calcDist = ref([0, 0])
+
   const positionDist = cacheRef('positionDist', [0, 0], useCache)
   const calcDist = cacheRef('calcDist', [0, 0], useCache)
 
   // 当前画板的比例100为正常
-  // const curRatio = ref(100)
   const curRatio = cacheRef('curRatio', 100, useCache)
   const scale = computed(() => curRatio.value / 100)
   const SCALE_STEP = 10
@@ -72,10 +70,11 @@ export default function (elQuery, useCache = true) {
           if (e.touches.length > 1) {
             const events1 = e.touches[0]
             const events2 = e.touches[1]
+            // 第一根手指的坐标
             const one = {
-              x: events1.screenX, // 第一根手指的横坐标
-              y: events1.screenY, // 第一根手指的横坐标
-            } // 第一根手指的横坐标
+              x: events1.screenX,
+              y: events1.screenY,
+            }
             const two = {
               x: events2.screenX, // 第二根手指的横坐标
               y: events2.screenY, // 第二根手指的横坐标
