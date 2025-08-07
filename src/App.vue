@@ -8,5 +8,5 @@ import Canvas from './canvas'
 </template>
 
 <style scoped>
-
+.a{}
 </style>
